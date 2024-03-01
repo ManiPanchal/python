@@ -242,12 +242,14 @@ export default function Main_Page(){
         }
         else{
             try {
+             let token=localStorage.getItem("token");
                 const response = await fetch('http://127.0.0.1:5000/deleteone', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
+                    
                   },
-                  body: JSON.stringify({ id: id.trim(),email: data[0][1]}),
+                  body: JSON.stringify({ id: id.trim(),email: data[0][1],role:data[0][3]}),
                 });
                 
                if(response.status===200){
@@ -381,7 +383,7 @@ export default function Main_Page(){
                       title: "Data updated successfully",
                       icon: "success"
                   })}
-                  
+
               } else {
                   Swal.fire({
                       title: "Something went wrong",

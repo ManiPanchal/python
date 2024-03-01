@@ -42,6 +42,7 @@ function Login() {
           .then(function(data){
 
             console.log(data.data);
+            localStorage.setItem("token",JSON.stringify(data.token))
             localStorage.setItem("data",JSON.stringify(data.data))
             // setResponseData(data.data);
             navigate("/main")
