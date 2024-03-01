@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS,cross_origin
+import jwt
 import mysql.connector
 mysql=mysql.connector.connect(
     host="localhost",
@@ -9,6 +10,15 @@ mysql=mysql.connector.connect(
 cursor=mysql.cursor()
 app = Flask(__name__)
 cors=CORS(app)
+header = {  
+  "alg": "HS256",  
+  "typ": "JWT"  
+}  
+  
+  
+  
+secret = "Ravipass"  
+  
 @app.route('/login', methods=['POST'])
 @cross_origin(origins=[u"*"])
 def login():
@@ -21,8 +31,13 @@ def login():
     cursor.execute("select * from users where email=%s and pass_word=%s and username=%s",(email,password,username))
     data=cursor.fetchall()
     if data:
+        payload = {  
+  "email": email,  
+  "role": data[0][3]  
+}
+        token= jwt.encode(payload, secret, algorithm='HS256', headers=header) 
         # print(data)
-        return jsonify({'data':data}),200
+        return jsonify({'data':data,"token":token}),200
     else:
         return jsonify({'message':'Not exist'}),201
     
@@ -84,16 +99,30 @@ def insert():
 @cross_origin(origins=[u"*"])
 def delete():
     data=request.get_json()
+    print(data)
     email=data.get('email')
     id=data.get('id')
-    if check(id,email):
-       sql = "delete from recipe where id=%s and user_id=%s"
-       val = (id,email)
-       cursor.execute(sql,val)
-       mysql.commit()
-       return jsonify({'message':'success'}),200
+    role=data.get('role')
+    print(role)
+    # decoded_jwt = jwt.decode(token, secret, algorithms=['HS256'])
+    # decoded_jwt = jwt.decode(token, secret, algorithms=['HS256'],verify=True)  
+    # print(decoded_jwt)
+    # print(decoded_jwt)
+    if role=='admin':
+        sql='delete from recipe where id=%s'
+        val=(id,)
+        cursor.execute(sql,val)
+        mysql.commit()
+        return jsonify({"message":'success'}),200
     else:
-       return jsonify({'message':'not valid'}),201
+        if check(id,email):
+           sql = "delete from recipe where id=%s and user_id=%s"
+           val = (id,email)
+           cursor.execute(sql,val)
+           mysql.commit()
+           return jsonify({'message':'success'}),200
+        else:
+           return jsonify({'message':'not valid'}),201
 
 @app.route('/check',methods=['POST'])
 @cross_origin(origins=[u"*"])
