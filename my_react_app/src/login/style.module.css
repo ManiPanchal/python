@@ -1,0 +1,78 @@
+
+*{margin:0;padding:0;box-sizing: border-box;}
+body{
+    /* background: rgba(0,0,0,0.7)url('back.jpg'); */
+    background-repeat: no-repeat;
+  background-size: 100% 100%;
+background-position: center;
+height:470px;
+position:relative;
+background-blend-mode: darken;}
+#login{
+    /* border-radius: 5px;
+    background-color: rgb(158, 251, 251);
+    width:30%;
+    margin-left: 35%; */
+    border-radius: 5px;
+    background-color:rgb(184, 237, 237);
+    width:30%;
+    padding: 10px;
+    padding-bottom: 40px;
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-left: 32%;
+    margin-top: 10%;
+    text-align: center;
+}
+
+input{
+    padding: 5px;
+    border:none;
+    border-radius: 5px;
+    text-align: left;
+    /* background-color: none; */
+}
+/* #email_l{
+    margin-left:-20px;
+} */
+.email_i{
+    margin-right:20px;
+    /* background-color: none; */
+}
+#data_submit{
+    border-radius: 5px;
+    width:18%;
+    
+    border:none;
+    background-color: aqua;
+    font-size: 15px;
+    padding: 12px;
+    margin:10px;
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);   
+}
+#btn{
+    float:left;
+    text-decoration: none;
+    border-radius: 5px;
+    width:18%;
+    color:black;
+    border:none;
+    background-color: rgb(91, 200, 200);
+    font-size: 15px;
+    padding: 12px;
+    /* margin:10px; */
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);   
+}
+p{color:red};
+.block{
+    display: block;
+}
+.none{
+    display: none;
+}
+.back{
+    background-color: white;
+    margin: 5px;
+}
+.para{
+    color: red;
+}

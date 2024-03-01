@@ -1,0 +1,128 @@
+h1{background-color:rgb(184, 237, 237) ;
+    padding: 10px;
+    float: center;}
+.back{
+    background-color: white;
+    background-size: 100% 100%;
+background-position: center;
+min-height:600px;
+
+}
+.select{
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    float: right;
+    margin-right: 400px;
+}
+.h3{
+    float: left;
+    margin-left: 400px;
+}
+.back2{
+    background-color: white;
+    width:80%;
+    margin-left: 170px;
+    border-radius:5px;
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-collapse: collapse;
+    padding-top: 50px;
+}
+  .cell{
+     border: 1px solid rgb(144, 222, 245);
+     padding: 30px;
+  
+  }
+  .input{
+    border: 2px solid black;
+    margin-top: 10px;
+    margin-right:50px;
+    
+  }
+  .label{
+    float: left;
+    margin-top: 20px;
+  }
+  .main_div{
+    width:35%;
+    background-color: aliceblue;
+    margin-left: 200px;
+    margin-top: 50px;
+    padding: 10px;
+  }
+  .btn{
+    border-radius: 5px;
+    width:18%;
+    text-decoration: none;
+    color: black;
+    border:none;
+    background-color: rgb(91, 200, 200);
+    font-size: 17px;
+    padding: 12px;
+    margin:10px;
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+/* .back3{
+  background-color: white;
+  width:80%;
+   margin-left: 170px; 
+  border-radius:5px;
+  box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-collapse: collapse;
+  padding-top: 50px;
+}
+.cell2{
+  border: 1px solid rgb(144, 222, 245);
+  /* padding: 10px; 
+  font-size: 15px;
+  padding: 0;
+
+}
+.input2{
+  border:1px solid black;
+  /* padding: 5px; 
+  border-radius: 0;
+  text-align: center;
+} */
+.container {
+  width:100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn2 {
+  /* border-radius: 5px; */
+  /* width: 18%; */
+  /* text-decoration: none; */
+  /* color: black; */
+  /* border: none; */
+  background-color: rgb(91, 200, 200);
+  /* font-size: 17px; */
+  /* padding: 12px; */
+  /* margin: 10px; */
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+}
+
+.back3 {
+  background-color: white;
+  width: 80%;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-collapse: collapse;
+}
+
+.cell2 {
+  border: 1px solid rgb(144, 222, 245);
+  font-size: 15px;
+}
+
+.input2 {
+  border: 1px solid black;
+  border-radius: 0;
+  text-align: center;
+}
+.new{
+  width:30px;
+}
+
