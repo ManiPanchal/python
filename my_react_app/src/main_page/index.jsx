@@ -2,12 +2,15 @@ import styles from './style.module.css'
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../context';
 import Swal from 'sweetalert2';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 export default function Main_Page(){
     let data=localStorage.getItem("data");
     console.log(data)
+    const navigate=useNavigate();
     data=JSON.parse(data)
     console.log(data[0][1]);
-    const [newdata,setData]=useState([])
+    const [newdata,setNewData]=useState([])
     const[insert,setinser]=useState(false)
     const[update,setUpdate]=useState(false);
     const[Delete,setDelete]=useState(false);
@@ -20,6 +23,9 @@ export default function Main_Page(){
     const[catagory,setCatagory]=useState("");
     const [id,setid]=useState("");
     const[new_data,setNewdata]=useState([]);
+    if(!data){
+      navigate("/login");
+    }
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -31,15 +37,7 @@ export default function Main_Page(){
     
             if (response) {
               const d = await response.json()
-              .then(function(d){
-                d=d.data;
-                console.log(d)
-                setData(d);
-                console.log(newdata);
-              })
-
-            //   let y = x + products.length;
-            //   setX(y);
+              setNewData(d);
             }
           } catch (err) {
             console.log(err);
@@ -65,16 +63,16 @@ export default function Main_Page(){
             </thead>
             <tbody>
               {/* Render data here */}
-              {newdata.map((item, index) => (
+              {newdata.map((item,index) => (
                 <tr key={index} className={styles.cell}>
                   {/* Render each row */}
-                  <td>{item[0]}</td>
-                  <td>{item[1]}</td>
-                  <td>{item[2]}</td>
-                  <td>{item[3]}</td>
-                  <td>{item[4]}</td>
-                  <td>{item[5]}</td>
-                  <td>{item[6]}</td>
+                  <td>{item.id}</td>
+                  <td>{item.recipe_name}</td>
+                  <td>{item.ingredients}</td>
+                  <td>{item.catagory}</td>
+                  <td>{item.instructions}</td>
+                  <td>{item.cooking_time}</td>
+                  <td>{item.rating}</td>
                 </tr>
               ))}
             </tbody>
@@ -304,141 +302,184 @@ export default function Main_Page(){
 
     //     }
     // }
-    // function update_one(){
-    //         const filteredData = newdata.filter(item => item[7] === data[0][1]);
-    //     return(
-    //         <>
-    //             <div className={styles.container}>
-    //             <table >
-    //         <thead>
-    //           <tr >
-    //             <th>Recipe Id</th>
-    //             <th>Recipe Name</th>
-    //             <th>Ingredients</th>
-    //             <th>Catagory</th>
-    //             <th>Instruction</th>
-    //             <th>Cooking Time</th>
-    //             <th>rating</th>
-    //             <th>Option</th>
-    //             {/* <th>Status</th> */}
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           {/* Render data here */}
-    //           {filteredData.
-    //           map((item, index) => (
-    //             <tr key={index}  >
-    //               {/* Render each row */}
-    //               {/* {setid(item[0])} */}
-    //               <td ><input value={item[0]} className={styles.input2} readOnly/></td>
-    //               <td><input value={item[1]} className={styles.input2} onChange={(e) => setRecipe_name(e.target.value)}/></td>
-    //               <td><input value={item[2]} className={styles.input2} onChange={(e) => setIngre(e.target.value)}/></td>
-    //               <td><input value={item[3]} className={styles.input2} onChange={(e) => setCatagory(e.target.value)}/></td>
-    //               <td><input value={item[4]} className={styles.input2} onChange={(e) => setInstru(e.target.value)}/></td>
-    //               <td><input value={item[5]} className={styles.input2} onChange={(e) => setTime(e.target.value)}/></td>
-    //               <td ><input value={item[6]} className={styles.input2} onChange={(e) => setRating(e.target.value)}/></td>
-    //               <td><button className={styles.btn2} onClick={update_new}>update</button></td>
-    //             </tr>
-    //           ))}
-    //         </tbody>
-    //       </table>
-    //           </div>
-    //         </>
-    //     )
-    // }
-    function update_one() {
-      const filteredData = newdata.filter(item => item[7] === data[0][1]);
-  
-      const handleUpdate = async (id) => {
-          const recipeToUpdate = filteredData.find(item => item[0] === id);
-  
-          if (!recipeToUpdate) {
-              console.error("Recipe not found.");
-              return;
+    function Row(props){
+      const [data, setData] = useState(props.data)
+
+      const setVal=(e, f)=>{
+        console.log("onaosdjaskdj");
+        setData(p=>{
+          console.log(p)
+          const obj = {...p}
+          obj[f] = e.target.value
+          return obj
+        })
+      }
+
+      const update = async()=>{
+        try {
+          const res = await fetch("http://localhost:5000/updateone",{
+            method:"POST",
+            headers:{
+              'content-type':'application/json'
+            },
+            body:JSON.stringify(data)
+          })
+          if(res.status==200){
+             Swal.fire({
+              title:"Updated successfully",
+              icon:"success"
+             })
           }
+          else{
+            Swal.fire({
+              title:"Something went wrong",
+              icon:"warning"
+             })
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      return (
+        <tr>
+          <td><input type="text" value={data.recipe_name} onInput={e=>setVal(e,'recipe_name')}/></td>
+          <td><input type="text" value={data.ingredients} onInput={e=>setVal(e,'ingredients')}/></td>
+          <td><input type="text" value={data.catagory} onInput={e=>setVal(e,'catagory')}/></td>
+          <td><input type="text" value={data.instructions} onInput={e=>setVal(e,'instructions')}/></td>
+          <td><input type="text" value={data.cooking_time} onInput={e=>setVal(e,'cooking_time')}/></td>
+          <td><input type="text" value={data.rating} onInput={e=>setVal(e,'rating')}/></td>
+          <td>
+            <button onClick={e=>update()}>Update</button>
+          </td>
+        </tr>
+      )
+    }
+
+    function update_one(){
+            const filteredData = newdata.filter(item => item.user_id === data[0][1]);
+        return(
+            <>
+            {/* {filteredData.length>0? */}
+                <div className={styles.container}>
+                <table >
+            <thead>
+              <tr >
+                <th>Recipe Name</th>
+                <th>Ingredients</th>
+                <th>Catagory</th>
+                <th>Instruction</th>
+                <th>Cooking Time</th>
+                <th>rating</th>
+                <th>Option</th>
+                {/* <th>Status</th> */}
+              </tr>
+            </thead>
+            <tbody>
+              {/* Render data here */}
+              {
+              filteredData.map((item) => (
+                <Row data={item}/>
+              ))}
+            </tbody>
+          </table>
+              </div>
+              {/* <div className={styles.data}>No Data Available</div>} */}
+            </>
+        )
+    }
+  //   function update_one() {
+  //     const filteredData = newdata.filter(item => item[7] === data[0][1]);
   
-          try {
-              const response = await fetch('http://127.0.0.1:5000/updateone', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      id: recipeToUpdate[0],
-                      name: recipe_name.trim(),
-                      ingredients: ingre.trim(),
-                      instruction: instruction.trim(),
-                      catagory: catagory.trim(),
-                      rating: rating.trim(),
-                      time: time.trim(),
-                      email: data[0][1],
-                  }),
-              });
+  //     const handleUpdate = async (id) => {
+  //         const recipeToUpdate = filteredData.find(item => item[0] === id);
   
-              if (response.ok) {
-                if(response.status==200){
+  //         if (!recipeToUpdate) {
+  //             console.error("Recipe not found.");
+  //             return;
+  //         }
+  
+  //         try {
+  //             const response = await fetch('http://127.0.0.1:5000/updateone', {
+  //                 method: 'POST',
+  //                 headers: {
+  //                     'Content-Type': 'application/json',
+  //                 },
+  //                 body: JSON.stringify({
+  //                     id: recipeToUpdate[0],
+  //                     name: recipe_name.trim(),
+  //                     ingredients: ingre.trim(),
+  //                     instruction: instruction.trim(),
+  //                     catagory: catagory.trim(),
+  //                     rating: rating.trim(),
+  //                     time: time.trim(),
+  //                     email: data[0][1],
+  //                 }),
+  //             });
+  
+  //             if (response.ok) {
+  //               if(response.status==200){
 
                 
-                  Swal.fire({
-                      title: "Data updated successfully",
-                      icon: "success"
-                  })}
+  //                 Swal.fire({
+  //                     title: "Data updated successfully",
+  //                     icon: "success"
+  //                 })}
 
-              } else {
-                  Swal.fire({
-                      title: "Something went wrong",
-                      icon: "warning"
-                  })
-              }
+  //             } else {
+  //                 Swal.fire({
+  //                     title: "Something went wrong",
+  //                     icon: "warning"
+  //                 })
+  //             }
   
-              // Clear input fields after update
-              setRecipe_name("");
-              setCatagory("");
-              setIngre("");
-              setInstru("");
-              setTime("");
-              setRating("");
-          } catch (error) {
-              console.error('Error updating data:', error);
-              // Handle error
-          }
-      };
+  //             // Clear input fields after update
+  //             setRecipe_name("");
+  //             setCatagory("");
+  //             setIngre("");
+  //             setInstru("");
+  //             setTime("");
+  //             setRating("");
+  //         } catch (error) {
+  //             console.error('Error updating data:', error);
+  //             // Handle error
+  //         }
+  //     };
   
-      return (
-          <>
-              <div className={styles.container}>
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Recipe Id</th>
-                              <th>Recipe Name</th>
-                              <th>Ingredients</th>
-                              <th>Catagory</th>
-                              <th>Instruction</th>
-                              <th>Cooking Time</th>
-                              <th>rating</th>
-                              <th>Option</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {filteredData.map((item, index) => (
-                              <tr key={index}>
-                                  <td><input value={item[0]} className={styles.input2} readOnly /></td>
-                                  <td><input value={item[1]} className={styles.input2} onChange={(e) => setRecipe_name(e.target.value)} /></td>
-                                  <td><input value={item[2]} className={styles.input2} onChange={(e) => setIngre(e.target.value)} /></td>
-                                  <td><input value={item[3]} className={styles.input2} onChange={(e) => setCatagory(e.target.value)} /></td>
-                                  <td><input value={item[4]} className={styles.input2} onChange={(e) => setInstru(e.target.value)} /></td>
-                                  <td><input value={item[5]} className={styles.input2} onChange={(e) => setTime(e.target.value)} /></td>
-                                  <td><input value={item[6]} className={styles.input2} onChange={(e) => setRating(e.target.value)} /></td>
-                                  <td><button className={styles.btn2} onClick={() => handleUpdate(item[0])}>Update</button></td>
-                              </tr>
-                          ))}
-                      </tbody>
-                  </table>
-              </div>
-          </>
-      );
-  }
+  //     return (
+  //         <>
+  //             <div className={styles.container}>
+  //                 <table>
+  //                     <thead>
+  //                         <tr>
+  //                             <th>Recipe Id</th>
+  //                             <th>Recipe Name</th>
+  //                             <th>Ingredients</th>
+  //                             <th>Catagory</th>
+  //                             <th>Instruction</th>
+  //                             <th>Cooking Time</th>
+  //                             <th>rating</th>
+  //                             <th>Option</th>
+  //                         </tr>
+  //                     </thead>
+  //                     <tbody>
+  //                         {filteredData.map((item, index) => (
+  //                             <tr key={index}>
+  //                                 <td><input value={item[0]} className={styles.input2} readOnly /></td>
+  //                                 <td><input value={item[1]} className={styles.input2} onChange={(e) => setRecipe_name(e.target.value)} /></td>
+  //                                 <td><input value={item[2]} className={styles.input2} onChange={(e) => setIngre(e.target.value)} /></td>
+  //                                 <td><input value={item[3]} className={styles.input2} onChange={(e) => setCatagory(e.target.value)} /></td>
+  //                                 <td><input value={item[4]} className={styles.input2} onChange={(e) => setInstru(e.target.value)} /></td>
+  //                                 <td><input value={item[5]} className={styles.input2} onChange={(e) => setTime(e.target.value)} /></td>
+  //                                 <td><input value={item[6]} className={styles.input2} onChange={(e) => setRating(e.target.value)} /></td>
+  //                                 <td><button className={styles.btn2} onClick={() => handleUpdate(item[0])}>Update</button></td>
+  //                             </tr>
+  //                         ))}
+  //                     </tbody>
+  //                 </table>
+  //             </div>
+  //         </>
+  //     );
+  // }
   
     async function update_new(){
         if(recipe_name.trim()==""||ingre.trim()==""||instruction.trim()==""||catagory.trim()==""||time.trim()==""||rating.trim()==""){
@@ -484,11 +525,16 @@ export default function Main_Page(){
          }
 
     }
+    function fun_logout(){
+       localStorage.clear();
+       navigate("/login");
+    }
     return(
         <>
         
         <div className={styles.back}>
         <h1>welcome</h1>
+        <button className={styles.btn3} onClick={fun_logout}>Logout</button>
         <h3 className={styles.h3}>Select Any option</h3>
         <select className={styles.select} onChange={fun_sel}>
             <option value="1">View all</option>
