@@ -68,9 +68,12 @@ def viewall():
     # print(data)
     email = data.get('email')
     cursor.execute("select * from recipe")
+    cols = [x[0] for x in cursor.description]
     data=cursor.fetchall()
+    res = [dict(zip(cols,row)) for row in data]
+    # print(res)
     if data:
-        return jsonify({'data':data}),200
+        return jsonify(res),200
     else:
         return jsonify({'error':'nothing'}),201
     
@@ -138,20 +141,28 @@ def check():
 def updateone():
     data=request.get_json()
     print(data)
-    email = data.get('email')
-    name=data.get('name')
+    email = "manishapanchal5591@gmail.com"
+    name=data.get('recipe_name')
     ingredients=data.get('ingredients')
-    instruction=data.get('instruction')
-    time=data.get('time')
+    instruction=data.get('instructions')
+    time=data.get('cooking_time')
     rating=data.get('rating')
     catagory=data.get('catagory')
-    email=data.get('email')
+    email=data.get('user_id')
     id=data.get('id')  
-    sql="update recipe set {}=%s,{}=%s,{}=%s,{}=%s,{}=%s,{}=%s where id=%s and user_id=%s".format("recipe_name","ingredients","catagory","instructions","cooking_time","rating")
+    sql = 'update recipe set recipe_name=%s,ingredients=%s,catagory=%s,instructions=%s,cooking_time=%s,rating=%s where id=%s and user_id=%s'
+    # sql="update recipe set {}=%s,{}=%s,{}=%s,{}=%s,{}=%s,{}=%s where id=%s and user_id=%s".format("recipe_name","ingredients","catagory","instructions","cooking_time","rating")
     val = (name,ingredients,catagory,instruction,time,rating,id,email)
-    cursor.execute(sql,val)
-    mysql.commit()
-    return jsonify({"message":"success"}),200
+    try:
+        cursor.execute(sql,val)
+        mysql.commit()
+        if cursor.rowcount>0:
+            return jsonify({"message":"success"}),200
+        else:
+            return jsonify({'msg':'error while'}),304
+    except Exception as e:
+        print(repr(e))
+        return jsonify({'err':repr(e)}),500
 def check(id,email):
         sql = "Select * from recipe where id=%s and user_id=%s"
         val = (id,email)
