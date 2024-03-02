@@ -9,6 +9,14 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate=useNavigate();
+  useEffect(()=>{
+
+    let t=localStorage.getItem("token")
+    if(t){
+      navigate("/main")
+    }
+  },[])
+  
   const ptrn = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
   const handleSubmit = (e) => {
@@ -37,16 +45,13 @@ function Login() {
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify(data),
       });
-        if(response.status===200){
-          let data=response.json()
-          .then(function(data){
-
-            console.log(data.data);
+        if(response.ok){
+          let data=await response.json()
             localStorage.setItem("token",JSON.stringify(data.token))
-            localStorage.setItem("data",JSON.stringify(data.data))
+            // localStorage.setItem("data",JSON.stringify(data.data))
             // setResponseData(data.data);
             navigate("/main")
-          })
+          
         }
         else if(response.status===400){
           swal.fire({
