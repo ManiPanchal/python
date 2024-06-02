@@ -5,7 +5,8 @@ import mysql.connector
 mysql=mysql.connector.connect(
     host="localhost",
     user="root",
-    database="management_recipe"
+    password="1234",
+    database="recipe_management"
 )
 cursor=mysql.cursor()
 app = Flask(__name__)
